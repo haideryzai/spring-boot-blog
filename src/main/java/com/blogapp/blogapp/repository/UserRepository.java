@@ -3,6 +3,11 @@ package com.blogapp.blogapp.repository;
 import com.blogapp.blogapp.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Add custom query methods if needed
+
+    Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

@@ -2,6 +2,10 @@ package com.blogapp.blogapp.entity;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -18,6 +22,28 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(length = 500)
+    private String bio;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    // Deleting a user also deletes their posts and comments
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
+
+    @PrePersist
+    void onCreate() {
+        createdAt = Instant.now();
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -50,5 +76,33 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 }
